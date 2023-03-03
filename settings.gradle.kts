@@ -1,7 +1,7 @@
-rootProject.name = "labymod4-addon-template"
+rootProject.name = "UUIDCacher"
 
 pluginManagement {
-    val labyGradlePluginVersion = "0.3.16"
+    val labyGradlePluginVersion = "0.3.18"
     plugins {
         id("net.labymod.gradle") version (labyGradlePluginVersion)
     }

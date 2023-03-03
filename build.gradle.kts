@@ -1,23 +1,28 @@
+import net.labymod.gradle.core.addon.info.dependency.MavenDependency
+
 plugins {
     id("java-library")
     id("net.labymod.gradle")
     id("net.labymod.gradle.addon")
 }
 
-group = "org.example"
+group = "de.northernside"
 version = "1.0.0"
 
 java.toolchain.languageVersion.set(JavaLanguageVersion.of(17))
 
 labyMod {
-    defaultPackageName = "org.example" //change this to your main package name (used by all modules)
+    defaultPackageName = "de.northernside" //change this to your main package name (used by all modules)
     addonInfo {
-        namespace = "example"
-        displayName = "ExampleAddon"
-        author = "Example Author"
-        description = "Example Description"
+        namespace = "uuidcacher"
+        displayName = "UUIDCacher"
+        author = "Northernside"
+        description = "Caches UUIDs on servers and sends them to an external endpoint."
         minecraftVersion = "*"
         version = System.getenv().getOrDefault("VERSION", "0.0.1")
+
+        mavenCentral()
+        mavenDependencies.add(MavenDependency("https://repo.maven.apache.org/maven2/", "com.google.guava:guava:31.1-jre"))
     }
 
     minecraft {

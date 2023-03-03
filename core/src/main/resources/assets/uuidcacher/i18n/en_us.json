@@ -1,0 +1,18 @@
+{
+  "uuidcacher": {
+    "settings": {
+      "name": "UUIDCacher",
+      "enabled": {
+        "name": "Enabled"
+      },
+      "uploadUUIDs": {
+        "name": "Upload UUIDs",
+        "text": "Click"
+      },
+      "getCache": {
+        "name": "Get cache size",
+        "text": "Click"
+      }
+    }
+  }
+}
