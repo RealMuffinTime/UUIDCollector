@@ -22,6 +22,10 @@ public class PlayerInfoAddListener {
     }
 
     String playerUsername = event.playerInfo().profile().getUsername();
-    UUIDCacher.users.put(playerUUID, playerUsername);
+    if (!UUIDCacher.users.containsKey(playerUUID) && !UUIDCacher.totalUsers.containsKey(playerUUID)) {
+      UUIDCacher.users.put(playerUUID, playerUsername);
+      //To make sure you don't cache a user you've already cached before. Even when the user cache is cleared out!
+      UUIDCacher.totalUsers.put(playerUUID, playerUsername);
+    }
   }
 }

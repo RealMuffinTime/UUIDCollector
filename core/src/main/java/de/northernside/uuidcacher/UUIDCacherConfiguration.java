@@ -52,12 +52,25 @@ public class UUIDCacherConfiguration extends AddonConfig {
         () -> Laby.labyAPI().notificationController().push(uploadingNotification));
 
     Thread uploadThread = new Thread(() -> {
-      UUIDCacher.users.forEach((playerUUID, playerUsername) -> {
+
+      //Allows cache size to be put back accurately, by using a temporary system while it looks up the UUIDs.
+      if (UUIDCacher.tempCache.size() == 0) {
+        UUIDCacher.tempCache = UUIDCacher.users;
+      } else {
+        UUIDCacher.tempCache.putAll(UUIDCacher.users);
+      }
+      UUIDCacher.users.clear();
+
+      UUIDCacher.tempCache.forEach((playerUUID, playerUsername)-> {
         try {
           URL url = new URL(
               "https://db.lilo-lookup.de/api/user/index/" + playerUUID + "/" + playerUsername);
           HttpURLConnection connection = (HttpURLConnection) url.openConnection();
           connection.getInputStream();
+
+          //Remove user from cache.
+          UUIDCacher.tempCache.remove(playerUUID);
+
           if (connection.getResponseCode() != 200) {
             Notification errorNotification = Notification.builder()
                 .icon(Component.icon(Icon.url("https://cdn.ebio.gg/logos/logo.png").aspectRatio(10, 10))
@@ -85,8 +98,6 @@ public class UUIDCacherConfiguration extends AddonConfig {
 
       Laby.labyAPI().minecraft().executeOnRenderThread(
           () -> Laby.labyAPI().notificationController().push(uploadedNotification));
-
-      UUIDCacher.users.clear();
     });
 
     uploadThread.start();

@@ -10,6 +10,8 @@ import net.labymod.api.models.addon.annotation.AddonMain;
 public class UUIDCacher extends LabyAddon<UUIDCacherConfiguration> {
 
   public static HashMap<UUID, String> users = new HashMap<>();
+  public static HashMap<UUID, String> tempCache = new HashMap<>();
+  public static HashMap<UUID, String> totalUsers = new HashMap<>();
 
   @Override
   protected void enable() {
