@@ -37,11 +37,8 @@ public class UUIDCollector extends LabyAddon<UUIDCollectorConfiguration> {
     this.labyAPI().hudWidgetRegistry().register(new OnServerHUD());
     this.logger().info("Enabled UUIDCollector Addon");
 
-    System.out.println("000");
     Thread updateStatsThread = new Thread(() -> {
-      System.out.println("well sex");
       ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-      System.out.println("sex 2");
       Runnable toRun = () -> {
         try {
           URL url = new URL(configuration().collectionServer().get() + "key/"
@@ -73,14 +70,11 @@ public class UUIDCollector extends LabyAddon<UUIDCollectorConfiguration> {
             OnServerHUD.updateOnServer(Integer.parseInt(response.toString()));
           }
         } catch (IOException exception) {
-          System.out.println("aaa");
           exception.printStackTrace();
         }
       };
 
-      System.out.println("sex 222");
       scheduler.scheduleAtFixedRate(toRun, 1, 10, TimeUnit.SECONDS);
-      System.out.println("666");
     });
 
     updateStatsThread.start();
