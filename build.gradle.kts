@@ -1,5 +1,3 @@
-import net.labymod.gradle.core.addon.info.dependency.MavenDependency
-
 plugins {
     id("java-library")
     id("net.labymod.gradle")
@@ -12,17 +10,14 @@ version = "1.0.0"
 java.toolchain.languageVersion.set(JavaLanguageVersion.of(17))
 
 labyMod {
-    defaultPackageName = "de.northernside" //change this to your main package name (used by all modules)
+    defaultPackageName = "de.northernside"
     addonInfo {
         namespace = "uuidcollector"
         displayName = "UUIDCollector"
         author = "Northernside, Bisou"
         description = "Collects UUIDs on servers and sends them to an external endpoint."
         minecraftVersion = "*"
-        version = System.getenv().getOrDefault("VERSION", "0.0.1")
-
-        mavenCentral()
-        mavenDependencies.add(MavenDependency("https://repo.maven.apache.org/maven2/", "com.google.guava:guava:31.1-jre"))
+        version = "1.0.0"
     }
 
     minecraft {
