@@ -1,4 +1,4 @@
-rootProject.name = "UUIDCacher"
+rootProject.name = "UUIDCollector"
 
 pluginManagement {
     val labyGradlePluginVersion = "0.3.18"

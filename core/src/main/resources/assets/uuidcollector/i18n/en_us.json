@@ -1,0 +1,34 @@
+{
+  "uuidcollector": {
+    "settings": {
+      "name": "UUIDCollector",
+      "enabled": {
+        "name": "Enabled"
+      },
+      "uploadUUIDs": {
+        "name": "Upload UUIDs",
+        "text": "Click"
+      },
+      "getCollection": {
+        "name": "Get collection size",
+        "text": "Click"
+      },
+      "collectionServer": {
+        "name": "Collection Server",
+        "description": "Sets the server URL for sending the UUIDs to.\n\nFormat: http(s)://domain.tld/x/\n- Must end with a /\n- x represents the root route to the collection server\n  - Example: https://db.lilo-lookup.de/api/"
+      },
+      "authenticationKey": {
+        "name": "Authentication Key",
+        "description": "Your authentication key for the specified server."
+      }
+    },
+    "hudWidget": {
+      "inCollection": {
+        "name": "In Collection"
+      },
+      "onServer": {
+        "name": "On Server"
+      }
+    }
+  }
+}

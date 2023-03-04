@@ -1,15 +1,15 @@
-package de.northernside.uuidcacher;
+package de.northernside.uuidcollector;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.concurrent.ExecutorService;
 import net.labymod.api.Laby;
 import net.labymod.api.addon.AddonConfig;
 import net.labymod.api.client.component.Component;
 import net.labymod.api.client.gui.icon.Icon;
 import net.labymod.api.client.gui.screen.widget.widgets.input.ButtonWidget.ButtonSetting;
 import net.labymod.api.client.gui.screen.widget.widgets.input.SwitchWidget.SwitchSetting;
+import net.labymod.api.client.gui.screen.widget.widgets.input.TextFieldWidget.TextFieldSetting;
 import net.labymod.api.configuration.loader.annotation.ConfigName;
 import net.labymod.api.configuration.loader.property.ConfigProperty;
 import net.labymod.api.notification.Notification;
@@ -17,15 +17,22 @@ import net.labymod.api.util.MethodOrder;
 
 @SuppressWarnings("FieldMayBeFinal")
 @ConfigName("settings")
-public class UUIDCacherConfiguration extends AddonConfig {
+public class UUIDCollectorConfiguration extends AddonConfig {
 
   @SwitchSetting
   private final ConfigProperty<Boolean> enabled = new ConfigProperty<>(true);
+  @MethodOrder(after = "getCollection")
+  @TextFieldSetting
+  private final ConfigProperty<String> collectionServer = new ConfigProperty<>(
+      "https://db.lilo-lookup.de/api/");
+  @MethodOrder(after = "collectionServer")
+  @TextFieldSetting
+  private final ConfigProperty<String> authenticationKey = new ConfigProperty<>("Your AuthKey");
 
   @MethodOrder(after = "enabled")
-  @ButtonSetting(translation = "uuidcacher.settings.uploadUUIDs.text")
+  @ButtonSetting(translation = "uuidcollector.settings.uploadUUIDs.text")
   public void uploadUUIDs() {
-    int uuidAmount = UUIDCacher.users.size();
+    int uuidAmount = UUIDCollector.users.size();
     if (uuidAmount == 0) {
       Notification noUUIDsNotification = Notification.builder()
           .icon(Component.icon(Icon.url("https://cdn.ebio.gg/logos/logo.png").aspectRatio(10, 10))
@@ -52,28 +59,25 @@ public class UUIDCacherConfiguration extends AddonConfig {
         () -> Laby.labyAPI().notificationController().push(uploadingNotification));
 
     Thread uploadThread = new Thread(() -> {
+      // Allows collection size to be put back accurately, by using a temporary system while it looks up the UUIDs.
+      UUIDCollector.tempCollection.putAll(UUIDCollector.users);
 
-      //Allows cache size to be put back accurately, by using a temporary system while it looks up the UUIDs.
-      if (UUIDCacher.tempCache.size() == 0) {
-        UUIDCacher.tempCache = UUIDCacher.users;
-      } else {
-        UUIDCacher.tempCache.putAll(UUIDCacher.users);
-      }
-      UUIDCacher.users.clear();
-
-      UUIDCacher.tempCache.forEach((playerUUID, playerUsername)-> {
+      UUIDCollector.users.clear();
+      UUIDCollector.tempCollection.forEach((playerUUID, playerUsername) -> {
         try {
           URL url = new URL(
-              "https://db.lilo-lookup.de/api/user/index/" + playerUUID + "/" + playerUsername);
+              this.collectionServer.get() + "user/index/" + playerUUID + "/" + playerUsername
+                  + "?key=" + authenticationKey.get());
           HttpURLConnection connection = (HttpURLConnection) url.openConnection();
           connection.getInputStream();
 
-          //Remove user from cache.
-          UUIDCacher.tempCache.remove(playerUUID);
+          // Removes the user from the collection.
+          UUIDCollector.tempCollection.remove(playerUUID);
 
           if (connection.getResponseCode() != 200) {
             Notification errorNotification = Notification.builder()
-                .icon(Component.icon(Icon.url("https://cdn.ebio.gg/logos/logo.png").aspectRatio(10, 10))
+                .icon(Component.icon(
+                        Icon.url("https://cdn.ebio.gg/logos/logo.png").aspectRatio(10, 10))
                     .getIcon())
                 .title(Component.text("Error " + connection.getResponseCode()))
                 .text(Component.text("The collection server responded with an error."))
@@ -104,9 +108,9 @@ public class UUIDCacherConfiguration extends AddonConfig {
   }
 
   @MethodOrder(after = "uploadUUIDs")
-  @ButtonSetting(translation = "uuidcacher.settings.getCache.text")
-  public void getCache() {
-    int uuidAmount = UUIDCacher.users.size();
+  @ButtonSetting(translation = "uuidcollector.settings.getCollection.text")
+  public void getCollection() {
+    int uuidAmount = UUIDCollector.users.size();
     Notification noUUIDsNotification = Notification.builder()
         .icon(Component.icon(Icon.url("https://cdn.ebio.gg/logos/logo.png").aspectRatio(10, 10))
             .getIcon())
@@ -122,5 +126,13 @@ public class UUIDCacherConfiguration extends AddonConfig {
   @Override
   public ConfigProperty<Boolean> enabled() {
     return this.enabled;
+  }
+
+  public ConfigProperty<String> collectionServer() {
+    return this.collectionServer;
+  }
+
+  public ConfigProperty<String> authenticationKey() {
+    return this.authenticationKey;
   }
 }

@@ -14,10 +14,10 @@ java.toolchain.languageVersion.set(JavaLanguageVersion.of(17))
 labyMod {
     defaultPackageName = "de.northernside" //change this to your main package name (used by all modules)
     addonInfo {
-        namespace = "uuidcacher"
-        displayName = "UUIDCacher"
-        author = "Northernside"
-        description = "Caches UUIDs on servers and sends them to an external endpoint."
+        namespace = "uuidcollector"
+        displayName = "UUIDCollector"
+        author = "Northernside, Bisou"
+        description = "Collects UUIDs on servers and sends them to an external endpoint."
         minecraftVersion = "*"
         version = System.getenv().getOrDefault("VERSION", "0.0.1")
 
