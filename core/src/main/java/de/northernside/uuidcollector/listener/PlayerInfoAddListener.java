@@ -18,9 +18,7 @@ public class PlayerInfoAddListener {
   public void onPlayerInfoAdd(PlayerInfoAddEvent event) {
     UUID playerUUID = event.playerInfo().profile().getUniqueId();
     this.addon.logger().info(playerUUID.toString());
-    if (playerUUID.toString().endsWith("0000-000000000000")) {
-      return; // Specially crafted NPCs used for the LabyMod API.
-    }
+    if (playerUUID.toString().endsWith("0000-000000000000")) return; // Specially crafted NPCs used for the LabyMod API.
 
     String playerUsername = event.playerInfo().profile().getUsername();
     if (!UUIDCollector.users.containsKey(playerUUID)

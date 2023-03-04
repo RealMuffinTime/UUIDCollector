@@ -1,3 +1,4 @@
+// Shit Code, idc. Open up a PR if you want to clean up my code <3
 package de.northernside.uuidcollector;
 
 import de.northernside.uuidcollector.hud.InCollectionHUD;
@@ -13,7 +14,6 @@ import java.util.HashMap;
 import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import net.labymod.api.Laby;
 import net.labymod.api.addon.LabyAddon;
@@ -63,8 +63,9 @@ public class UUIDCollector extends LabyAddon<UUIDCollectorConfiguration> {
             String inputLine;
             StringBuilder response = new StringBuilder();
 
-            while ((inputLine = in.readLine()) != null)
+            while ((inputLine = in.readLine()) != null) {
               response.append(inputLine);
+            }
 
             in.close();
             OnServerHUD.updateOnServer(Integer.parseInt(response.toString()));
