@@ -1,6 +1,7 @@
 package de.northernside.uuidcollector;
 
 import com.google.gson.Gson;
+import de.northernside.uuidcollector.hud.InCollectionHUD;
 import de.northernside.uuidcollector.misc.UUIDPostRequestModel;
 import net.labymod.api.Laby;
 import net.labymod.api.addon.AddonConfig;
@@ -83,6 +84,7 @@ public class UUIDCollectorConfiguration extends AddonConfig {
 
                 Laby.labyAPI().notificationController().push(uploadedNotification);
                 UUIDCollector.tempCollection.clear();
+                InCollectionHUD.updateInCollection(0);
               }
             });
       } catch (Exception ex) {
