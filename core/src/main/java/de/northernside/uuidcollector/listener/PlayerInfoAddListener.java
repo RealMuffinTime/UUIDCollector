@@ -2,9 +2,11 @@ package de.northernside.uuidcollector.listener;
 
 import de.northernside.uuidcollector.UUIDCollector;
 import de.northernside.uuidcollector.hud.InCollectionHUD;
+import java.util.Arrays;
 import java.util.UUID;
 import net.labymod.api.event.Subscribe;
 import net.labymod.api.event.client.network.playerinfo.PlayerInfoAddEvent;
+import net.labymod.api.metadata.Metadata;
 
 public class PlayerInfoAddListener {
 
@@ -17,7 +19,6 @@ public class PlayerInfoAddListener {
   @Subscribe
   public void onPlayerInfoAdd(PlayerInfoAddEvent event) {
     UUID playerUUID = event.playerInfo().profile().getUniqueId();
-    this.addon.logger().info(playerUUID.toString());
     if (playerUUID.toString().endsWith("0000-000000000000")) return; // Specially crafted NPCs used for the LabyMod API.
 
     String playerUsername = event.playerInfo().profile().getUsername();
