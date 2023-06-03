@@ -25,7 +25,7 @@ public class UUIDCollectorConfiguration extends AddonConfig {
   @MethodOrder(after = "getCollection")
   @TextFieldSetting
   private final ConfigProperty<String> collectionServer = new ConfigProperty<>(
-      "https://db.lilo-lookup.de/api/");
+      "https://users.northernsi.de/");
   @MethodOrder(after = "collectionServer")
   @TextFieldSetting
   private final ConfigProperty<String> authenticationKey = new ConfigProperty<>("Your AuthKey");
@@ -57,22 +57,9 @@ public class UUIDCollectorConfiguration extends AddonConfig {
             UUIDCollector.tempCollection);
         String usersJson = new Gson().toJson(usersRequestModel);
         Request.ofString()
-            .url(this.collectionServer.get() + "user/index?key=" + authenticationKey.get())
+            .url(this.collectionServer.get() + "api/donate/" + authenticationKey.get())
             .json(usersJson)
             .async().execute(result -> {
-              if (result.getStatusCode() != 200) {
-                Notification errorNotification = Notification.builder()
-                    .icon(Component.icon(
-                            Icon.url("https://cdn.ebio.gg/logos/logo.png").aspectRatio(10, 10))
-                        .getIcon())
-                    .title(Component.text("Error " + result.getStatusCode()))
-                    .text(Component.text("The collection server responded with an error."))
-                    .duration(4500)
-                    .build();
-
-                Laby.labyAPI().minecraft().executeOnRenderThread(
-                    () -> Laby.labyAPI().notificationController().push(errorNotification));
-              } else {
                 Notification uploadedNotification = Notification.builder()
                     .icon(Component.icon(
                             Icon.url("https://cdn.ebio.gg/logos/logo.png").aspectRatio(10, 10))
@@ -85,7 +72,6 @@ public class UUIDCollectorConfiguration extends AddonConfig {
                 Laby.labyAPI().notificationController().push(uploadedNotification);
                 UUIDCollector.tempCollection.clear();
                 InCollectionHUD.updateInCollection(0);
-              }
             });
       } catch (Exception ex) {
         ex.printStackTrace();
