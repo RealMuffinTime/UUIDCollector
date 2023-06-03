@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "de.northernside"
-version = "1.0.0"
+version = "1.1.0"
 
 java.toolchain.languageVersion.set(JavaLanguageVersion.of(17))
 
@@ -17,7 +17,7 @@ labyMod {
         author = "Northernside, Bisou"
         description = "Collects UUIDs on servers and sends them to an external endpoint."
         minecraftVersion = "*"
-        version = "1.0.0"
+        version = "1.1.0"
     }
 
     minecraft {
@@ -29,7 +29,7 @@ labyMod {
                 "1.18.2",
                 "1.19.2",
                 "1.19.3",
-                "1.19.4-pre1"
+                "1.19.4"
         ) { version, provider ->
             configureRun(provider, version)
         }
@@ -71,14 +71,6 @@ fun configureRun(provider: net.labymod.gradle.core.minecraft.provider.VersionPro
     }
 
     provider.javaVersion = when (gameVersion) {
-        "1.8.9", "1.12.2", "1.16.5" -> {
-            JavaVersion.VERSION_1_8
-        }
-
-        "1.17.1" -> {
-            JavaVersion.VERSION_16
-        }
-
         else -> {
             JavaVersion.VERSION_17
         }
