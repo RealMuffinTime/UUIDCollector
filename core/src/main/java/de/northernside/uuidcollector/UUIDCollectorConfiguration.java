@@ -39,6 +39,7 @@ public class UUIDCollectorConfiguration extends AddonConfig {
           .icon(Component.icon(Icon.url("https://cdn.ebio.gg/logos/logo.png").aspectRatio(10, 10))
               .getIcon())
           .title(Component.text("Nothing to upload!"))
+          .text(Component.text("Uploaded 0 UUIDs to the collection server"))
           .duration(4000)
           .build();
 

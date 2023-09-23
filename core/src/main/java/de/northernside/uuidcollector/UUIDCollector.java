@@ -41,7 +41,7 @@ public class UUIDCollector extends LabyAddon<UUIDCollectorConfiguration> {
       ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
       Runnable toRun = () -> {
         try {
-          URL url = new URL(configuration().collectionServer().get() + "key/"
+          URL url = new URL(configuration().collectionServer().get() + "api/key/"
               + configuration().authenticationKey().get() + "/length");
           HttpURLConnection connection = (HttpURLConnection) url.openConnection();
           InputStream inputStream = connection.getInputStream();

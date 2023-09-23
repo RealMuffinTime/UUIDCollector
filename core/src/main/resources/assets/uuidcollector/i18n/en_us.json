@@ -15,7 +15,7 @@
       },
       "collectionServer": {
         "name": "Collection Server",
-        "description": "Sets the server URL for sending the UUIDs to.\n\nFormat: http(s)://domain.tld/x/\n- Must end with a /\n- x represents the root route to the collection server\n  - Example: https://db.lilo-lookup.de/api/"
+        "description": "Sets the server URL for sending the UUIDs to.\n\nFormat: http(s)://domain.tld/\n- Must end with a /\n- Example: https://db.lilo-lookup.de/"
       },
       "authenticationKey": {
         "name": "Authentication Key",
