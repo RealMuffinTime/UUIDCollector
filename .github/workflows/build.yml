@@ -1,4 +1,4 @@
-name: LabyAddon Build
+name: Build LabyAddon UUIDCollector
 
 on:
   push:
