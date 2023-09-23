@@ -17,7 +17,7 @@ labyMod {
         author = "Northernside, Bisou"
         description = "Collects UUIDs on servers and sends them to an external endpoint."
         minecraftVersion = "*"
-        version = "1.1.0"
+        version = getVersion().toString()
     }
 
     minecraft {
