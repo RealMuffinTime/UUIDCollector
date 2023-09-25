@@ -10,6 +10,7 @@ import net.labymod.api.client.gui.icon.Icon;
 import net.labymod.api.client.gui.screen.widget.widgets.input.ButtonWidget.ButtonSetting;
 import net.labymod.api.client.gui.screen.widget.widgets.input.SwitchWidget.SwitchSetting;
 import net.labymod.api.client.gui.screen.widget.widgets.input.TextFieldWidget.TextFieldSetting;
+import net.labymod.api.client.resources.ResourceLocation;
 import net.labymod.api.configuration.loader.annotation.ConfigName;
 import net.labymod.api.configuration.loader.property.ConfigProperty;
 import net.labymod.api.notification.Notification;
@@ -36,7 +37,7 @@ public class UUIDCollectorConfiguration extends AddonConfig {
     int uuidAmount = UUIDCollector.users.size();
     if (uuidAmount == 0) {
       Notification noUUIDsNotification = Notification.builder()
-          .icon(Component.icon(Icon.url("https://cdn.ebio.gg/logos/logo.png").aspectRatio(10, 10))
+          .icon(Component.icon(Icon.texture(ResourceLocation.create("uuidcollector", "textures/icon.png")).aspectRatio(10, 10))
               .getIcon())
           .title(Component.text("Nothing to upload!"))
           .text(Component.text("Uploaded 0 UUIDs to the collection server"))
@@ -63,7 +64,7 @@ public class UUIDCollectorConfiguration extends AddonConfig {
             .async().execute(result -> {
                 Notification uploadedNotification = Notification.builder()
                     .icon(Component.icon(
-                            Icon.url("https://cdn.ebio.gg/logos/logo.png").aspectRatio(10, 10))
+                            Icon.texture(ResourceLocation.create("uuidcollector", "textures/icon.png")).aspectRatio(10, 10))
                         .getIcon())
                     .title(Component.text("Uploaded UUIDs!"))
                     .text(Component.text("Uploaded " + uuidAmount + " UUIDs to the collection server."))
@@ -94,7 +95,7 @@ public class UUIDCollectorConfiguration extends AddonConfig {
   public void getCollection() {
     int uuidAmount = UUIDCollector.users.size();
     Notification noUUIDsNotification = Notification.builder()
-        .icon(Component.icon(Icon.url("https://cdn.ebio.gg/logos/logo.png").aspectRatio(10, 10))
+        .icon(Component.icon(Icon.texture(ResourceLocation.create("uuidcollector", "textures/icon.png")).aspectRatio(10, 10))
             .getIcon())
         .title(Component.text("UUIDCollector"))
         .text(Component.text("You've collected " + uuidAmount + " UUIDs."))

@@ -1,4 +1,5 @@
 // Shit Code, idc. Open up a PR if you want to clean up my code <3
+// Here it is. :)
 package de.northernside.uuidcollector;
 
 import de.northernside.uuidcollector.hud.InCollectionHUD;
@@ -16,6 +17,7 @@ import net.labymod.api.Laby;
 import net.labymod.api.addon.LabyAddon;
 import net.labymod.api.client.component.Component;
 import net.labymod.api.client.gui.icon.Icon;
+import net.labymod.api.client.resources.ResourceLocation;
 import net.labymod.api.models.addon.annotation.AddonMain;
 import net.labymod.api.notification.Notification;
 
@@ -50,7 +52,7 @@ public class UUIDCollector extends LabyAddon<UUIDCollectorConfiguration> {
 
           if (connection.getResponseCode() != 200) {
             Notification errorNotification = Notification.builder()
-                .icon(Component.icon(Icon.url("https://cdn.ebio.gg/logos/logo.png").aspectRatio(10, 10))
+                .icon(Component.icon(Icon.texture(ResourceLocation.create("uuidcollector", "textures/icon.png")).aspectRatio(10, 10))
                     .getIcon())
                 .title(Component.text("Error " + connection.getResponseCode()))
                 .text(Component.text("The collection server responded with an error."))
