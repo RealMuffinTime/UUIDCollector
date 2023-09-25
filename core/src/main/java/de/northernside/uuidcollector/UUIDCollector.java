@@ -12,9 +12,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.UUID;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 import net.labymod.api.Laby;
 import net.labymod.api.addon.LabyAddon;
 import net.labymod.api.client.component.Component;
@@ -35,21 +32,25 @@ public class UUIDCollector extends LabyAddon<UUIDCollectorConfiguration> {
     this.registerListener(new PlayerInfoAddListener(this));
     this.labyAPI().hudWidgetRegistry().register(new InCollectionHUD());
     this.labyAPI().hudWidgetRegistry().register(new OnServerHUD());
-    this.logger().info("Enabled UUIDCollector Addon");
+    this.logger().info("Enabled UUIDCollector Addon.");
 
-    Thread updateStatsThread = new Thread(() -> {
-      ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-      Runnable toRun = () -> {
+    getOnServerCollection(configuration().collectionServer().get(), configuration().authenticationKey().get());
+  }
+
+  public static String getOnServerCollection(String address, String key) {
+    class veryClassy implements Runnable {
+      private String amount = "-1";
+
+      @Override
+      public void run(){
         try {
-          URL url = new URL(configuration().collectionServer().get() + "api/key/"
-              + configuration().authenticationKey().get() + "/length");
+          URL url = new URL( address + "api/key/" + key + "/length");
           HttpURLConnection connection = (HttpURLConnection) url.openConnection();
           InputStream inputStream = connection.getInputStream();
 
           if (connection.getResponseCode() != 200) {
             Notification errorNotification = Notification.builder()
-                .icon(Component.icon(
-                        Icon.url("https://cdn.ebio.gg/logos/logo.png").aspectRatio(10, 10))
+                .icon(Component.icon(Icon.url("https://cdn.ebio.gg/logos/logo.png").aspectRatio(10, 10))
                     .getIcon())
                 .title(Component.text("Error " + connection.getResponseCode()))
                 .text(Component.text("The collection server responded with an error."))
@@ -68,17 +69,28 @@ public class UUIDCollector extends LabyAddon<UUIDCollectorConfiguration> {
             }
 
             in.close();
-            OnServerHUD.updateOnServer(Integer.parseInt(response.toString()));
+            amount = response.toString();
+            OnServerHUD.updateOnServer(Integer.parseInt(amount));
           }
         } catch (IOException exception) {
           exception.printStackTrace();
         }
-      };
+      }
 
-      scheduler.scheduleAtFixedRate(toRun, 1, 10, TimeUnit.SECONDS);
-    });
+      public String getAmount() {
+        return amount;
+      }
+    }
 
-    updateStatsThread.start();
+    veryClassy classy = new veryClassy();
+    Thread thread = new Thread(classy);
+    thread.start();
+    try {
+      thread.join();
+    } catch (InterruptedException e) {
+        throw new RuntimeException(e);
+    }
+      return classy.getAmount();
   }
 
   @Override

@@ -23,6 +23,6 @@ public class OnServerHUD extends TextHudWidget<TextHudWidgetConfig> {
     super.load(config);
 
     onServer = super.createLine("On Server", "");
-    updateOnServer(UUIDCollector.users.size());
+    updateOnServer(-1);
   }
 }

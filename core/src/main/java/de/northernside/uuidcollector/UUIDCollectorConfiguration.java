@@ -80,6 +80,13 @@ public class UUIDCollectorConfiguration extends AddonConfig {
     });
 
     uploadThread.start();
+    try {
+      uploadThread.join();
+    } catch (InterruptedException e) {
+      throw new RuntimeException(e);
+    }
+
+    UUIDCollector.getOnServerCollection(collectionServer.get(), authenticationKey.get());
   }
 
   @MethodOrder(after = "uploadUUIDs")
