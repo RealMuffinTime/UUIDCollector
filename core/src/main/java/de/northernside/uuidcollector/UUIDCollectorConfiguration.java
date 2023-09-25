@@ -23,7 +23,7 @@ public class UUIDCollectorConfiguration extends AddonConfig {
 
   @SwitchSetting
   private final ConfigProperty<Boolean> enabled = new ConfigProperty<>(true);
-  @MethodOrder(after = "getCollection")
+  @MethodOrder(after = "getInCollection")
   @TextFieldSetting
   private final ConfigProperty<String> collectionServer = new ConfigProperty<>(
       "https://users.northernsi.de/");
@@ -91,8 +91,8 @@ public class UUIDCollectorConfiguration extends AddonConfig {
   }
 
   @MethodOrder(after = "uploadUUIDs")
-  @ButtonSetting(translation = "uuidcollector.settings.getCollection.text")
-  public void getCollection() {
+  @ButtonSetting(translation = "uuidcollector.settings.getInCollection.text")
+  public void getInCollection() {
     int uuidAmount = UUIDCollector.users.size();
     Notification noUUIDsNotification = Notification.builder()
         .icon(Component.icon(Icon.texture(ResourceLocation.create("uuidcollector", "textures/icon.png")).aspectRatio(10, 10))
