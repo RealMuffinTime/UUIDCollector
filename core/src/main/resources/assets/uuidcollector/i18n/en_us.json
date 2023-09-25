@@ -13,6 +13,10 @@
         "name": "Get collection size",
         "text": "Click"
       },
+      "getOnServer": {
+        "name": "Get collection size on server",
+        "text": "Click"
+      },
       "collectionServer": {
         "name": "Collection Server",
         "description": "Sets the server URL for sending the UUIDs to.\n\nFormat: http(s)://domain.tld/\n- Must end with a /\n- Example: https://db.lilo-lookup.de/"

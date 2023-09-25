@@ -23,7 +23,7 @@ public class UUIDCollectorConfiguration extends AddonConfig {
 
   @SwitchSetting
   private final ConfigProperty<Boolean> enabled = new ConfigProperty<>(true);
-  @MethodOrder(after = "getInCollection")
+  @MethodOrder(after = "getOnServer")
   @TextFieldSetting
   private final ConfigProperty<String> collectionServer = new ConfigProperty<>(
       "https://users.northernsi.de/");
@@ -99,6 +99,22 @@ public class UUIDCollectorConfiguration extends AddonConfig {
             .getIcon())
         .title(Component.text("UUIDCollector"))
         .text(Component.text("You've collected " + uuidAmount + " UUIDs."))
+        .duration(3500)
+        .build();
+
+    Laby.labyAPI().minecraft().executeOnRenderThread(
+        () -> Laby.labyAPI().notificationController().push(noUUIDsNotification));
+  }
+
+  @MethodOrder(after = "getInCollection")
+  @ButtonSetting(translation = "uuidcollector.settings.getOnServer.text")
+  public void getOnServer() {
+    String uuidAmount = UUIDCollector.getOnServerCollection(collectionServer.get(), authenticationKey.get());;
+    Notification noUUIDsNotification = Notification.builder()
+        .icon(Component.icon(Icon.texture(ResourceLocation.create("uuidcollector", "textures/icon.png")).aspectRatio(10, 10))
+            .getIcon())
+        .title(Component.text("UUIDCollector"))
+        .text(Component.text("There are " + uuidAmount + " UUIDs on the server."))
         .duration(3500)
         .build();
 
