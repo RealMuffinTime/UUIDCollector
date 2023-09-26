@@ -5,6 +5,7 @@ package de.northernside.uuidcollector;
 import de.northernside.uuidcollector.hud.InCollectionHUD;
 import de.northernside.uuidcollector.hud.OnServerHUD;
 import de.northernside.uuidcollector.listener.PlayerInfoAddListener;
+import de.northernside.uuidcollector.listener.ServerDisconnectListener;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,6 +33,7 @@ public class UUIDCollector extends LabyAddon<UUIDCollectorConfiguration> {
   protected void enable() {
     this.registerSettingCategory();
     this.registerListener(new PlayerInfoAddListener(this));
+    this.registerListener(new ServerDisconnectListener(this));
     this.labyAPI().hudWidgetRegistry().register(new InCollectionHUD());
     this.labyAPI().hudWidgetRegistry().register(new OnServerHUD());
     this.logger().info("Enabled UUIDCollector Addon.");

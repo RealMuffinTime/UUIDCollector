@@ -75,8 +75,8 @@ public class UUIDCollectorConfiguration extends AddonConfig {
                 UUIDCollector.tempCollection.clear();
                 InCollectionHUD.updateInCollection(0);
             });
-      } catch (Exception ex) {
-        ex.printStackTrace();
+      } catch (Exception exception) {
+        exception.printStackTrace();
       }
     });
 
