@@ -2,6 +2,8 @@ package de.northernside.uuidcollector;
 
 import com.google.gson.Gson;
 import de.northernside.uuidcollector.hud.InCollectionHUD;
+import de.northernside.uuidcollector.hud.OnServerHUD;
+import de.northernside.uuidcollector.misc.UUIDJsonModel;
 import de.northernside.uuidcollector.misc.UUIDPostRequestModel;
 import net.labymod.api.Laby;
 import net.labymod.api.addon.AddonConfig;
@@ -62,18 +64,20 @@ public class UUIDCollectorConfiguration extends AddonConfig {
             .url(this.collectionServer.get() + "api/donate/" + authenticationKey.get())
             .json(usersJson)
             .async().execute(result -> {
-                Notification uploadedNotification = Notification.builder()
-                    .icon(Component.icon(
-                            Icon.texture(ResourceLocation.create("uuidcollector", "textures/icon.png")).aspectRatio(10, 10))
-                        .getIcon())
-                    .title(Component.text("Uploaded UUIDs!"))
-                    .text(Component.text("Uploaded " + uuidAmount + " UUIDs to the collection server."))
-                    .duration(8000)
-                    .build();
+              UUIDJsonModel json  = new Gson().fromJson(result.get(), UUIDJsonModel.class);
+              Notification uploadedNotification = Notification.builder()
+                  .icon(Component.icon(
+                          Icon.texture(ResourceLocation.create("uuidcollector", "textures/icon.png")).aspectRatio(10, 10))
+                      .getIcon())
+                  .title(Component.text("Uploaded UUIDs!"))
+                  .text(Component.text("Uploaded " + json.getValid() + " valid UUIDs. Total UUIDs: " + json.getLength()))
+                  .duration(8000)
+                  .build();
 
-                Laby.labyAPI().notificationController().push(uploadedNotification);
-                UUIDCollector.tempCollection.clear();
-                InCollectionHUD.updateInCollection(0);
+              Laby.labyAPI().notificationController().push(uploadedNotification);
+              UUIDCollector.tempCollection.clear();
+              InCollectionHUD.updateInCollection(0);
+              OnServerHUD.updateOnServer(json.getLength());
             });
       } catch (Exception exception) {
         exception.printStackTrace();
@@ -86,8 +90,6 @@ public class UUIDCollectorConfiguration extends AddonConfig {
     } catch (InterruptedException e) {
       throw new RuntimeException(e);
     }
-
-    UUIDCollector.getOnServerCollection(collectionServer.get(), authenticationKey.get());
   }
 
   @MethodOrder(after = "uploadUUIDs")
@@ -109,7 +111,7 @@ public class UUIDCollectorConfiguration extends AddonConfig {
   @MethodOrder(after = "getInCollection")
   @ButtonSetting(translation = "uuidcollector.settings.getOnServer.text")
   public void getOnServer() {
-    String uuidAmount = UUIDCollector.getOnServerCollection(collectionServer.get(), authenticationKey.get());;
+    String uuidAmount = UUIDCollector.getOnServerCollection(collectionServer.get(), authenticationKey.get()).toString();
     Notification noUUIDsNotification = Notification.builder()
         .icon(Component.icon(Icon.texture(ResourceLocation.create("uuidcollector", "textures/icon.png")).aspectRatio(10, 10))
             .getIcon())

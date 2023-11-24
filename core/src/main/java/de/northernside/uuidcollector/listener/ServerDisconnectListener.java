@@ -3,8 +3,6 @@ package de.northernside.uuidcollector.listener;
 import com.google.gson.Gson;
 import de.northernside.uuidcollector.UUIDCollector;
 import de.northernside.uuidcollector.hud.InCollectionHUD;
-import de.northernside.uuidcollector.hud.OnServerHUD;
-import java.util.UUID;
 import de.northernside.uuidcollector.misc.UUIDPostRequestModel;
 import net.labymod.api.Laby;
 import net.labymod.api.client.component.Component;
