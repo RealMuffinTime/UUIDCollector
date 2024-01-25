@@ -31,6 +31,19 @@ import java.nio.charset.StandardCharsets;
 @ConfigName("settings")
 public class UUIDCollectorConfiguration extends AddonConfig {
 
+  private void sendNotification(String text, int duration) {
+    Notification notification = Notification.builder()
+        .icon(Component.icon(Icon.texture(ResourceLocation.create("uuidcollector", "textures/icon.png")).aspectRatio(10, 10))
+            .getIcon())
+        .title(Component.text("UUIDCollector"))
+        .text(Component.text(text))
+        .duration(duration)
+        .build();
+
+    Laby.labyAPI().minecraft().executeOnRenderThread(
+        () -> Laby.labyAPI().notificationController().push(notification));
+  }
+
   @SwitchSetting
   private final ConfigProperty<Boolean> enabled = new ConfigProperty<>(true);
 
@@ -43,16 +56,7 @@ public class UUIDCollectorConfiguration extends AddonConfig {
   @ButtonSetting(translation = "uuidcollector.settings.getInCollection.text")
   public void getInCollection() {
     int uuidAmount = UUIDCollector.users.size();
-    Notification notification = Notification.builder()
-        .icon(Component.icon(Icon.texture(ResourceLocation.create("uuidcollector", "textures/icon.png")).aspectRatio(10, 10))
-            .getIcon())
-        .title(Component.text("UUIDCollector"))
-        .text(Component.text("You've collected locally " + uuidAmount + " UUIDs."))
-        .duration(4000)
-        .build();
-
-    Laby.labyAPI().minecraft().executeOnRenderThread(
-        () -> Laby.labyAPI().notificationController().push(notification));
+    sendNotification("You've collected locally " + uuidAmount + " UUIDs.", 4000);
   }
 
   @MethodOrder(after = "getInCollection")
@@ -110,16 +114,7 @@ public class UUIDCollectorConfiguration extends AddonConfig {
       OnServerHUD.updateOnServer(-1);
     }
 
-    Notification notification = Notification.builder()
-        .icon(Component.icon(Icon.texture(ResourceLocation.create("uuidcollector", "textures/icon.png")).aspectRatio(10, 10))
-            .getIcon())
-        .title(Component.text("UUIDCollector"))
-        .text(Component.text(text))
-        .duration(4000)
-        .build();
-
-    Laby.labyAPI().minecraft().executeOnRenderThread(
-        () -> Laby.labyAPI().notificationController().push(notification));
+    sendNotification(text, 4000);
   }
 
   @MethodOrder(after = "getOnServer")
@@ -183,18 +178,6 @@ public class UUIDCollectorConfiguration extends AddonConfig {
       text = classy.getError();
       OnServerHUD.updateOnServer(-1);
     }
-
-    Notification notification = Notification.builder()
-        .icon(Component.icon(
-                Icon.texture(ResourceLocation.create("uuidcollector", "textures/icon.png")).aspectRatio(10, 10))
-            .getIcon())
-        .title(Component.text("UUIDCollector"))
-        .text(Component.text(text))
-        .duration(duration)
-        .build();
-
-    Laby.labyAPI().minecraft().executeOnRenderThread(
-        () -> Laby.labyAPI().notificationController().push(notification));
   }
   @MethodOrder(after = "uploadToServer")
   @TextFieldSetting
