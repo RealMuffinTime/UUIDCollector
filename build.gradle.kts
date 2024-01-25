@@ -14,7 +14,7 @@ labyMod {
     addonInfo {
         namespace = "uuidcollector"
         displayName = "UUIDCollector"
-        author = "Northernside, Bisou"
+        author = "Northernside, Bisou, RealMuffinTime"
         description = "Collects UUIDs on servers and sends them to an external endpoint."
         minecraftVersion = "*"
         version = getVersion().toString()
