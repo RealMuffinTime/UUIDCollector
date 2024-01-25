@@ -1,5 +1,9 @@
 // Shit Code, idc. Open up a PR if you want to clean up my code <3
 // Here it is. :)
+
+// TODO unify endpoints with UUIDCollectorBackend
+// TODO check url/key for validity after modified
+
 package de.northernside.uuidcollector;
 
 import de.northernside.uuidcollector.hud.InCollectionHUD;
@@ -10,7 +14,6 @@ import java.util.HashMap;
 import java.util.UUID;
 import net.labymod.api.addon.LabyAddon;
 import net.labymod.api.models.addon.annotation.AddonMain;
-import net.labymod.api.notification.Notification;
 
 @AddonMain
 public class UUIDCollector extends LabyAddon<UUIDCollectorConfiguration> {
