@@ -14,10 +14,10 @@ labyMod {
     addonInfo {
         namespace = "uuidcollector"
         displayName = "UUIDCollector"
-        author = "Northernside, Bisou"
+        author = "Northernside, Bisou, RealMuffinTime"
         description = "Collects UUIDs on servers and sends them to an external endpoint."
         minecraftVersion = "*"
-        version = "1.1.0"
+        version = getVersion().toString()
     }
 
     minecraft {
@@ -29,7 +29,10 @@ labyMod {
                 "1.18.2",
                 "1.19.2",
                 "1.19.3",
-                "1.19.4"
+                "1.19.4",
+                "1.20.1",
+                "1.20.2",
+                "1.20.4"
         ) { version, provider ->
             configureRun(provider, version)
         }
@@ -42,7 +45,7 @@ labyMod {
     }
 
     addonDev {
-        snapshotRelease()
+        productionRelease()
     }
 }
 

@@ -2,11 +2,9 @@ package de.northernside.uuidcollector.listener;
 
 import de.northernside.uuidcollector.UUIDCollector;
 import de.northernside.uuidcollector.hud.InCollectionHUD;
-import java.util.Arrays;
 import java.util.UUID;
 import net.labymod.api.event.Subscribe;
 import net.labymod.api.event.client.network.playerinfo.PlayerInfoAddEvent;
-import net.labymod.api.metadata.Metadata;
 
 public class PlayerInfoAddListener {
 
