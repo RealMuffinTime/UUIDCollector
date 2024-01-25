@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.*;
 
 @SuppressWarnings("FieldMayBeFinal")
 @ConfigName("settings")
@@ -118,33 +119,42 @@ public class UUIDCollectorConfiguration extends AddonConfig {
   @MethodOrder(after = "getOnServer")
   @ButtonSetting(translation = "uuidcollector.settings.uploadToServer.text")
   public void uploadToServer() {
+
+    if (UUIDCollector.users.isEmpty()) {
+      sendNotification("Nothing to upload!", 4000);
+      return;
+    }
+
     class veryClassy implements Runnable {
       private String error;
       private UUIDJsonModel json;
+      private HashMap<UUID, String> splitCollection;
 
-      public veryClassy() {}
+      public veryClassy(HashMap<UUID, String> splitCollection) {
+          this.splitCollection = splitCollection;
+      }
 
       @Override
       public void run() {
-        // Allows collection size to be put back accurately, by using a temporary system while it looks up the UUIDs.
-        UUIDCollector.tempCollection.putAll(UUIDCollector.users);
-        UUIDCollector.users.clear();
+        try {
+          UUIDPostRequestModel usersRequestModel = new UUIDPostRequestModel(this.splitCollection);
 
-        UUIDPostRequestModel usersRequestModel = new UUIDPostRequestModel(
-            UUIDCollector.tempCollection);
-        String usersJson = new Gson().toJson(usersRequestModel);
-        Response<WebInputStream> response = Request.ofInputStream()
-            .url(collectionServer.get() + "api/donate/" + authenticationKey.get())
-            .json(usersJson).executeSync();
+          String usersJson = new Gson().toJson(usersRequestModel);
+          Response<WebInputStream> response = Request.ofInputStream()
+              .url(collectionServer.get() + "api/donate/" + authenticationKey.get())
+              .json(usersJson)
+              .readTimeout(20000)
+              .executeSync();
 
-        if (response.getStatusCode() != 200) {
-          error = "The collection server responded with an error " + response.getStatusCode() + ".";
-          UUIDCollector.users.putAll(UUIDCollector.tempCollection);
+          if (response.getStatusCode() == 200) {
+            json = new Gson().fromJson(new InputStreamReader(response.get(), StandardCharsets.UTF_8), UUIDJsonModel.class);
+          } else {
+            throw new IOException();
+          }
+        } catch (Exception e) {
+          error = "Could not connect to collection server!";
+          UUIDCollector.users.putAll(this.splitCollection);
           InCollectionHUD.updateInCollection(UUIDCollector.users.size());
-        } else {
-          json = new Gson().fromJson(new InputStreamReader(response.get(), StandardCharsets.UTF_8), UUIDJsonModel.class);
-          UUIDCollector.tempCollection.clear();
-          InCollectionHUD.updateInCollection(0);
         }
       }
 
@@ -157,23 +167,64 @@ public class UUIDCollectorConfiguration extends AddonConfig {
       }
     }
 
-    veryClassy classy = new veryClassy();
-    Thread thread = new Thread(classy);
-    thread.start();
-    try {
-      thread.join();
-    } catch (InterruptedException e) {
-      throw new RuntimeException(e);
+    // Allows collection size to be put back accurately, by using a temporary system while it uploads up the UUIDs.
+    // Splitting up HashMaps to max 250 entries, because experienced issues with timeouts because of to large requests (around 500 entries).
+    UUIDCollector.tempCollection.putAll(UUIDCollector.users);
+    UUIDCollector.users.clear();
+    InCollectionHUD.updateInCollection(0);
+
+    List<HashMap<UUID, String>> collections = new ArrayList<>();
+    HashMap<UUID, String> tempMap = new HashMap<>();
+    int counter = 0;
+    for (Map.Entry<UUID, String> entry : UUIDCollector.tempCollection.entrySet()) {
+      tempMap.put(entry.getKey(), entry.getValue());
+      counter++;
+      if (tempMap.size() == 250 || counter == UUIDCollector.tempCollection.size()) {
+        collections.add(new HashMap<>(tempMap));
+        tempMap.clear();
+      }
+    }
+    UUIDCollector.tempCollection.clear();
+
+    List<Integer> validList = new ArrayList<>();
+    List<Integer> totalList = new ArrayList<>();
+    List<String> errorsList = new ArrayList<>();
+    for (HashMap<UUID, String> splitCollection : collections) {
+      veryClassy classy = new veryClassy(splitCollection);
+      Thread thread = new Thread(classy);
+      thread.start();
+      try {
+        thread.join();
+      } catch (InterruptedException e) {
+        throw new RuntimeException(e);
+      }
+
+      if (classy.getError() == null) {
+        validList.add(classy.getJson().getValid());
+        totalList.add(classy.getJson().getLength());
+      } else {
+        errorsList.add(classy.getError());
+      }
     }
 
-    String text;
-    int duration = 4000;
-    if (classy.getError() == null) {
-      text = "Uploaded " + classy.getJson().getValid() + " valid UUIDs. Total UUIDs: " + classy.getJson().getLength();
-      OnServerHUD.updateOnServer(classy.getJson().getLength());
-      duration = 8000;
+    int valid = 0;
+    for (int number : validList) {
+      valid += number;
+    }
+
+    if (errorsList.isEmpty()) {
+      sendNotification("Uploaded " + valid + " valid UUIDs. Total UUIDs: " + Collections.max(totalList), 8000);
+      OnServerHUD.updateOnServer(Collections.max(totalList));
+    } else if (!validList.isEmpty()) {
+      sendNotification("Uploaded " + valid + " valid UUIDs. Total UUIDs: " + Collections.max(totalList) + " (There have been errors)", 8000);
+      OnServerHUD.updateOnServer(Collections.max(totalList));
+      for (String error : errorsList) {
+        sendNotification(error, 4000);
+      }
     } else {
-      text = classy.getError();
+      for (String error : errorsList) {
+        sendNotification(error, 4000);
+      }
       OnServerHUD.updateOnServer(-1);
     }
   }
