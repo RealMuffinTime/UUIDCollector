@@ -73,17 +73,15 @@ public class UUIDCollectorConfiguration extends AddonConfig {
         try {
           URL url = new URL(collectionServer.get() + "api/key/" + authenticationKey.get());
           HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-          InputStream inputStream = connection.getInputStream();
-          UUIDJsonModel json = new Gson().fromJson(
-              new InputStreamReader(inputStream, StandardCharsets.UTF_8), UUIDJsonModel.class);
 
-          if (connection.getResponseCode() != 200) {
-            error = "The collection server responded with an error " + connection.getResponseCode() + ".";
+          if (connection.getResponseCode() == 200) {
+            InputStream inputStream = connection.getInputStream();
+            json = new Gson().fromJson(new InputStreamReader(inputStream, StandardCharsets.UTF_8), UUIDJsonModel.class);
           } else {
-            this.json = json;
+            error = "The collection server responded with an error " + connection.getResponseCode() + ".";
           }
         } catch (IOException e) {
-          throw new RuntimeException(e);
+          error = "Could not connect to collection server!";
         }
       }
 
