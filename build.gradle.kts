@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "de.northernside"
-version = "1.1.0"
+version = System.getenv().getOrDefault("VERSION", "1.1.0")
 
 java.toolchain.languageVersion.set(JavaLanguageVersion.of(17))
 
